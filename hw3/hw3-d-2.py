@@ -3,20 +3,15 @@ import hashlib
 
 import tracemalloc
 
-BITMASK = 0xffffffffffffffff # 64 bit
-# BITMASK = 0xffffffffffffffffffff # 80 bit
+# BITMASK = 0xffffffffffffffff # 64 bit
+BITMASK = 0xffffffffffffffffffff # 80 bit
 # BITMASK = 0xffffffffffffffffffffffffffffffff # 128 bit
 
 INITIAL_X = 20223402
 
 # Test.
-LOOP_THRESH = 0xfffffffff # At single loop, how many files?
+LOOP_THRESH = 0xffffffff # At single loop, how many files?
 FILE_THRESH = 0xffffff
-
-
-
-
-
 
 
 tracemalloc.start()
@@ -41,10 +36,12 @@ def run_first_round(next_h, file_cnt):
     print("Running first round...")
 
     hist = {}
+    prev_h = next_h
 
     for i in range(0, LOOP_THRESH):
         
-        next_h = do_hash(next_h)
+        prev_h = next_h
+        next_h = do_hash(prev_h)
 
         try:
             val = hist[next_h] # Test
@@ -52,7 +49,7 @@ def run_first_round(next_h, file_cnt):
             with open(f"report-hw3-d-2.log", 'w') as f:
                 f.write(f"Found at first round: Counts - {i}\n")
 
-            print(f"\nFound: Hash: {next_h}, Count {i}\n")
+            print(f"\nFound: Hash: {next_h}, Message: {prev_h}, Count {i}\n")
             exit()
 
         except KeyError:
@@ -70,7 +67,7 @@ def run_first_round(next_h, file_cnt):
             file_cnt = file_cnt + 1
 
         mem = tracemalloc.get_traced_memory()
-        print(f"\rHashing: {i: {10}} - {'%4.2f' % (i / BITMASK * 100)}%, Memory: {'%6.3f' % (mem[0] / 10**6)}MB, File Written ID: {file_cnt - 1: {10}}", end="")
+        print(f"\rHashing: {i: {10}} - {'%4.2f' % (i / LOOP_THRESH * 100)}% of threshold, Memory: {'%6.3f' % (mem[0] / 10**6)}MB, File Written ID: {file_cnt - 1: {10}}", end="")
 
     
     file_cnt = file_cnt - 1 # Current latest. Not to-be-written
@@ -114,7 +111,7 @@ def run_second_round(test_file_range):
                     for _ in int_keys: hist[_] = ''
                 
                 mem = tracemalloc.get_traced_memory()
-                print(f"\rChecking: {i: {6}} vs {j: {6}} file ID, {'%4.2f' % (i / BITMASK * 100)}%, Memory: {'%6.3f' % (mem[0] / 10**6)}MB", end="")
+                print(f"\rChecking: {i: {6}} vs {j: {6}} file ID, {'%4.2f' % (i / FILE_THRESH * 100)}%, Memory: {'%6.3f' % (mem[0] / 10**6)}MB", end="")
 
                 for k, target in enumerate(target_keys):
                     try:
@@ -126,6 +123,7 @@ def run_second_round(test_file_range):
                             f.write(f"\nFound at second round: {target},\n")
                             f.write(f"  Each file size: {FILE_THRESH}\n")
                             f.write(f"  Current position file: {i}, vs file {j}, of offset {k + 1}\n")
+
                             f.write(f"  Total index position: {1 + k + idx_base}\n")
                         exit()
 
