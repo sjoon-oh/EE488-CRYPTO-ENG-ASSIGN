@@ -1,28 +1,36 @@
 #include <cstdio>
 #include <cstdint>
 
+#include <list>
+
 namespace hw_3 {
+    // class Node {
+    // private:
+    //     uint16_t    n_id;   // Node ID
+    //     uint16_t    n_val;  // Node Internal Value  
+    //     int32_t     c_id;   // Cycle ID
+
+    //     bool        ready;  // Is the calc done?
+
+    // public:
+    //     Node();
+    //     Node(uint16_t, uint16_t);
+
+    //     uint16_t set_id() = delete;
+    //     uint16_t set_val();
+
+    //     uint16_t get_id();
+    //     uint16_t get_val();
+    // };
+
     class Node {
+
+    }
+
+    class GraphList {
     private:
-        uint16_t    n_id;   // Node ID
-        uint16_t    n_val;  // Node Internal Value  
-        int32_t     c_id;   // Cycle ID
-
-        bool        ready;  // Is the calc done?
-
-    public:
-        Node();
-        Node(uint16_t, uint16_t);
-
-        uint16_t set_id() = delete;
-        uint16_t set_val();
-
-        uint16_t get_id();
-        uint16_t get_val();
-
-
-
-    };
+        std::list<Node> m_list;
+    }
 }
 
 hw_3::Node::Node() {
