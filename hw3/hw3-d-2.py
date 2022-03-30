@@ -10,8 +10,7 @@ BITMASK = 0xffffffffffffffffffff # 80 bit
 INITIAL_X = 20223402
 
 # Test.
-LOOP_THRESH = 0xffffffffff # At single loop, how many files?
-FILE_THRESH = 0xffffff
+FILE_THRESH = 0x1ffffff
 
 
 tracemalloc.start()
@@ -34,6 +33,7 @@ def run_first_round(next_h, file_cnt):
     #
     # First round: Generate Database
     print("Running first round...")
+    file_cnt = file_cnt + 1
 
     hist = {}
     prev_h = next_h
@@ -67,7 +67,6 @@ def run_first_round(next_h, file_cnt):
         json.dump(hist, outfile, sort_keys=False)
 
     del hist
-    file_cnt = file_cnt + 1
 
     return next_h, file_cnt
         
