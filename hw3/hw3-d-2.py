@@ -3,8 +3,8 @@ import hashlib
 
 import tracemalloc
 
-BITMASK = 0xffffffffffffffff # 64 bit
-# BITMASK = 0xffffffffffffffffffff # 80 bit
+# BITMASK = 0xffffffffffffffff # 64 bit
+BITMASK = 0xffffffffffffffffffff # 80 bit
 # BITMASK = 0xffffffffffffffffffffffffffffffff # 128 bit
 
 INITIAL_X = 20223402
@@ -72,66 +72,65 @@ def run_first_round(next_h, file_cnt):
     return next_h, file_cnt
         
 
-def run_second_round(test_file_range):
+def run_second_round(latest_file):
     #
     # Second round:
     print("\nRunning second round...")
 
-    if (test_file_range < 1): 
+    if (latest_file < 1): 
         print("Not enough JSON files. Jump.")
         return
 
     else:
-        idx_base = FILE_THRESH
-
-        for i in range(1, test_file_range):
-
-            target_keys = 0
-            with open(f"./hw3-d-json/hist-{i}.json", "r") as f:
-
-                target_keys = json.load(f)
-                target_keys = [int(_) for _ in target_keys.keys()]
-
-            for j in range(i): # vs files.
-                
-                #
-                # Recover vs files  
-                hist = {}
-                with open(f"./hw3-d-json/hist-{j}.json", "r") as f:
-
-                    hist = json.load(f)
-                    int_keys = [int(_) for _ in hist.keys()]
+        idx_base = FILE_THRESH * latest_file
 
 
-                    del hist
-                    hist = {}
+        target_keys = 0
+        with open(f"./hw3-d-json/hist-{i}.json", "r") as f:
 
-                    for _ in int_keys: hist[_] = ''
-                
-                mem = tracemalloc.get_traced_memory()
-                print(f"\rChecking: {i: {6}} vs {j: {6}} file ID, {'%8.2f' % (i / FILE_THRESH * 100)}%, Memory: {'%8.2f' % (mem[0] / 10**6)}MB", end="")
+            target_keys = json.load(f)
+            target_keys = [int(_) for _ in target_keys.keys()]
 
-                for k, target in enumerate(target_keys):
-                    try:
-                        val = hist[target]
+        for j in range(latest_file): # vs files.
+            
+            #
+            # Recover vs files  
+            hist = {}
+            with open(f"./hw3-d-json/hist-{j}.json", "r") as f:
 
-                        with open(f"report-hw3-d-2.log", 'w') as f:
-                            f.write(f"Found: Counts - {i}\n")
+                hist = json.load(f)
+                int_keys = [int(_) for _ in hist.keys()]
 
-                            f.write(f"\nFound at second round: {target},\n")
-                            f.write(f"  Each file size: {FILE_THRESH}\n")
-                            f.write(f"  Current position file: {i}, vs file {j}, of offset {k + 1}\n")
 
-                            f.write(f"  Total index position: {1 + k + idx_base}\n")
-                        exit()
-
-                    except KeyError:
-                        continue
-                
                 del hist
+                hist = {}
 
-            idx_base = idx_base + len(target_keys)
-            del target_keys
+                for _ in int_keys: hist[_] = ''
+            
+            mem = tracemalloc.get_traced_memory()
+            print(f"\rChecking: {latest_file: {6}} vs {j: {6}} file ID, {'%8.2f' % (j / FILE_THRESH * 100)}%, Memory: {'%8.2f' % (mem[0] / 10**6)}MB", end="")
+
+            for k, target in enumerate(target_keys):
+                try:
+                    val = hist[target]
+
+                    with open(f"report-hw3-d-2.log", 'w') as f:
+                        f.write(f"Found at file - {latest_file}\n")
+
+                        f.write(f"\nFound at second round: {target},\n")
+                        f.write(f"  Each file size: {FILE_THRESH}\n")
+                        f.write(f"  Current position file: {latest_file}, vs file {j}, of offset {k + 1}\n")
+
+                        f.write(f"  Total index position: {1 + k + idx_base}\n")
+                    exit()
+
+                except KeyError:
+                    continue
+            
+            del hist
+
+        idx_base = idx_base + len(target_keys)
+        del target_keys
 
 
 #
