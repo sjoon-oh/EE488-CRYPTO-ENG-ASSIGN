@@ -14,10 +14,6 @@ CYCLE_  = 1
 
 BITMASK = 0xffff # 16 bit
 BITMASK = 0xffffffff # 32 bit
-# BITMASK = 0xffffffffffffffff # 64 bit
-# BITMASK = 0xffffffffffffffffffff # 80 bit
-# BITMASK = 0xffffffffffffffffffffffffffffffff # 128 bit
-
 
 
 banner = \
@@ -44,7 +40,6 @@ else:
     print(f"Arguments ready for:")
     for x in x_list:
         print(f"  {x}")
-
 
     #
     # Initialize firsts.
@@ -165,7 +160,3 @@ else:
         f.write(f"Average Cycle Length: {avg_cycl_len}\n")
         f.write(f"Maximum Cycle Length: {max_cycl_len}\n")
         f.write(f"Minimum Cycle Length: {min_cycl_len}\n\n")
-    
-
-            
-    
