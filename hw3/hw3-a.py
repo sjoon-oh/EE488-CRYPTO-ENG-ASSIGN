@@ -13,7 +13,7 @@ TAIL_   = 0
 CYCLE_  = 1
 
 BITMASK = 0xffff # 16 bit
-BITMASK = 0xffffffff # 32 bit
+# BITMASK = 0xffffffff # 32 bit
 
 
 banner = \
