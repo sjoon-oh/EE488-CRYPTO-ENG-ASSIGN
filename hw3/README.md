@@ -71,6 +71,10 @@ def search_graph(curr_hash, curr_graph, curr_idx):
 
 When all computations were taken place, the results are stored in `r_list`, in tuple form. Properties of graphs are printed out to console at the end of the execution.
 
+#### Fix (Update)
+
+The script `hw3-a-fix.py` is the real answer to the problem (a). It iterates through all the possible starting points within given range. The argument parsing part is the only modified part of the source code. Everything remains the same.
+
 ### (b) Finding a Cycle in k-bits
 
 #### How to Run
